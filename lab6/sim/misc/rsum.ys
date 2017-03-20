@@ -1,0 +1,49 @@
+#name:zhangziyang
+#ID:515030910038
+      .pos 0
+init: irmovl Stack, %esp
+      irmovl Stack, %ebp
+      call Main
+      halt
+      .align 4
+ele1: .long 0x00a
+      .long ele2
+ele2:
+      .long 0x0b0
+      .long ele3
+ele3:
+      .long 0xc00
+      .long 0
+
+Main: pushl %ebp
+      rrmovl %esp,%ebp
+      irmovl ele1, %eax
+      pushl %eax
+      call Rsum
+      rrmovl %ebp,%esp
+      popl %ebp
+      ret
+
+Rsum: pushl %ebp
+      rrmovl %esp,%ebp
+      pushl %ebx
+      irmovl $4,%ecx
+      subl %ecx,%esp
+      mrmovl 8(%ebp),%esi
+      xorl %eax,%eax
+      andl %esi,%esi
+      je End
+      mrmovl (%esi),%ebx
+      irmovl $4,%ecx
+      addl %ecx,%esi
+      mrmovl (%esi),%edi
+      rmmovl %edi,(%esp)
+      call Rsum
+      addl %ebx,%eax
+
+End:  addl %ecx,%esp
+      popl %ebx
+      popl %ebp
+      ret
+      .pos 0x100
+Stack:

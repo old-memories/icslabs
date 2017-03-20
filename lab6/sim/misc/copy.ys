@@ -1,0 +1,55 @@
+#name:zhangziyang
+#ID:515030910038
+      .pos 0
+init: irmovl Stack, %esp
+      irmovl Stack, %ebp
+      call Main
+      halt
+     .align 4
+# Source block
+src:
+     .long 0x00a
+     .long 0x0b0
+     .long 0xc00
+# Destination block
+dest:
+     .long 0x111
+     .long 0x222
+     .long 0x333
+Main: pushl %ebp
+      rrmovl %esp,%ebp
+      irmovl $3, %eax
+      pushl %eax
+      irmovl dest,%eax
+      pushl %eax
+      irmovl src,%eax
+      pushl %eax
+      call Copy
+      rrmovl %ebp,%esp
+      popl %ebp
+      ret
+
+Copy: pushl %ebp
+      rrmovl %esp,%ebp
+      xorl %eax,%eax
+      mrmovl 8(%ebp),%ecx
+      mrmovl 12(%ebp),%edx
+      mrmovl 16(%ebp),%esi
+      andl %esi,%esi
+      je End
+Loop: mrmovl (%ecx),%edi
+      rmmovl %edi,(%edx)
+      xorl %edi,%eax
+      irmovl $4,%edi
+      addl %edi,%ecx
+      addl %edi,%edx
+      irmovl $1,%edi
+      subl %edi,%esi
+      andl %esi,%esi
+      jne Loop
+
+End:  rrmovl %ebp,%esp
+      popl %ebp
+      ret
+      .pos 0x100
+Stack:
