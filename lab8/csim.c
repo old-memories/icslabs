@@ -10,7 +10,7 @@
 struct Line{
     int valid;
     int tag;
-    int lru;
+    int lru;  //we use lru algo
 };
 
 struct Set{
@@ -28,11 +28,11 @@ int hits=0;
 int evictions=0;
 
 
-int Getopt(int argc,char** argv,int*s,int*E,int*b,char* trace,int*verbose);
-void initCache(int s,int E,int b,struct Cache *cache);
-void updateCache(struct Cache* cache,int setNum,int tagNum,int verbose);
-void updateLru(struct Cache* cache,int setNum,int index);
-int minLru(struct Cache* cache,int setNo);
+int Getopt(int argc,char** argv,int*s,int*E,int*b,char* trace,int*verbose);   // read cmdline
+void initCache(int s,int E,int b,struct Cache *cache);    //malloc and set ptr
+void updateCache(struct Cache* cache,int setNum,int tagNum,int verbose);//check miss or hit and set validbit, setbit
+void updateLru(struct Cache* cache,int setNum,int index);   // index is the index of updated block
+int minLru(struct Cache* cache,int setNo);  //the minLru block is the least recent used block and we can evict it
 
 
 
@@ -57,25 +57,25 @@ int main(int argc,char**argv)
         printf("failed to open file.\n");
     while((fscanf(file,"%s %x,%d",opt,&addr,&size))!=EOF){
         //printf("\nread a line.\n");
-        if(strcmp(opt,"I")==0)
+        if(strcmp(opt,"I")==0)    //if 'I' do nothing
             continue;
         if(verbose)
             printf("%s %x,%d ",opt,addr,size);
-        int setNo=(addr>>b)&((1<<s)-1);
+        int setNo=(addr>>b)&((1<<s)-1); 
         int tagNo=(addr>>(s+b));
-        if(strcmp(opt,"S")==0){
+        if(strcmp(opt,"S")==0){    
             updateCache(&cache,setNo,tagNo,verbose);
             if(verbose==1)
                 printf("\n");
             continue;
         }
-        if(strcmp(opt,"L")==0){
+        if(strcmp(opt,"L")==0){   // "L" equals to "S" in this simulator
             updateCache(&cache,setNo,tagNo,verbose);
             if(verbose==1)
                 printf("\n");
             continue;
         }
-        if(strcmp(opt,"M")==0){
+        if(strcmp(opt,"M")==0){   //"M" has the same consequence of two "S" or "L"
             updateCache(&cache,setNo,tagNo,verbose);                        
             updateCache(&cache,setNo,tagNo,verbose);
             if(verbose==1)
