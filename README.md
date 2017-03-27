@@ -1,3 +1,3 @@
 # icslabs
-my ics labs\n
+my ics labs  
 in 2016-2017
